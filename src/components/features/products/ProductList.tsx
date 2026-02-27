@@ -1,6 +1,8 @@
 import { useState, useMemo, useCallback } from 'react';
-import { FlatList, View, TextInput, StyleSheet } from 'react-native';
+import { FlatList, View, StyleSheet } from 'react-native';
 import { ProductCard } from './ProductCard';
+import { Input } from '../../ui';
+import { useTheme } from '../../../stores/theme-store';
 
 interface Product {
   id: string;
@@ -31,6 +33,7 @@ const mockProducts: Product[] = [
 ];
 
 export function ProductList() {
+  const { colors } = useTheme();
   const [search, setSearch] = useState('');
 
   const filteredProducts = useMemo(() => {
@@ -50,14 +53,12 @@ export function ProductList() {
   const keyExtractor = useCallback((item: Product) => item.id, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.searchContainer, { backgroundColor: colors.card }]}>
+        <Input
           placeholder="Buscar productos"
           value={search}
           onChangeText={setSearch}
-          placeholderTextColor="#8E8E93"
         />
       </View>
       <FlatList
@@ -74,19 +75,9 @@ export function ProductList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
   },
   searchContainer: {
     padding: 16,
-    backgroundColor: '#FFFFFF',
-  },
-  searchInput: {
-    backgroundColor: '#F2F2F7',
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#000000',
   },
   list: {
     paddingBottom: 16,

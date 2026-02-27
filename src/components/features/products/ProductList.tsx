@@ -38,15 +38,11 @@ export function ProductList() {
 
   const filteredProducts = useMemo(() => {
     if (!search.trim()) return mockProducts;
-    return mockProducts.filter((p) =>
-      p.name.toLowerCase().includes(search.toLowerCase())
-    );
+    return mockProducts.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
   }, [search]);
 
   const renderItem = useCallback(
-    ({ item }: { item: Product }) => (
-      <ProductCard id={item.id} name={item.name} />
-    ),
+    ({ item }: { item: Product }) => <ProductCard id={item.id} name={item.name} />,
     []
   );
 
@@ -55,11 +51,7 @@ export function ProductList() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.searchContainer, { backgroundColor: colors.card }]}>
-        <Input
-          placeholder="Buscar productos"
-          value={search}
-          onChangeText={setSearch}
-        />
+        <Input placeholder="Buscar productos" value={search} onChangeText={setSearch} />
       </View>
       <FlatList
         data={filteredProducts}

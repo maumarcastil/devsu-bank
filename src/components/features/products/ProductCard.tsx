@@ -10,7 +10,9 @@ export const ProductCard = memo(function ProductCard({ id, name }: ProductCardPr
   return (
     <Card>
       <Text variant="subtitle">{name}</Text>
-      <Text variant="caption" color="muted">#{id}</Text>
+      <Text variant="caption" color="muted">
+        #{id}
+      </Text>
     </Card>
   );
 });

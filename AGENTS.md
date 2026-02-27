@@ -215,17 +215,15 @@ src/
 
 ## Non-Negotiable Rules
 
-1. **Always commit after each task**: After completing any task (no matter how small), always create a commit with a descriptive message. Do NOT wait for the user to ask.
+1. **Always ask before committing**: Never create commits without explicit permission from the user. Ask the user if they want you to commit changes.
 
-2. **Never ask for commit permission**: Commits are automatic. If you completed work, commit it immediately.
+2. **Run lint and typecheck before commit**: Always run `npm run lint` and `npx tsc --noEmit` before committing. Fix any errors first.
 
-3. **Run lint and typecheck before commit**: Always run `npm run lint` and `npx tsc --noEmit` before committing. Fix any errors first.
+3. **Run format before commit**: Always run `npm run format` before committing to ensure consistent code style.
 
-4. **Run format before commit**: Always run `npm run format` before committing to ensure consistent code style.
+4. **Never skip quality checks**: If lint or typecheck fails, fix the issues before committing.
 
-5. **Never skip quality checks**: If lint or typecheck fails, fix the issues before committing.
-
-6. **Commit message format**: Use clear, descriptive messages following conventional commits.
+5. **Commit message format**: Use clear, descriptive messages following conventional commits.
 
 ## Additional Resources
 

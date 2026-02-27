@@ -72,6 +72,6 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   list: {
-    paddingBottom: 16,
+    paddingBottom: 100,
   },
 });

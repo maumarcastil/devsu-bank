@@ -47,16 +47,17 @@ npx tsc --noEmit  # TypeScript type check (no emit)
 
 ```typescript
 // Good
-import { Button } from '@/components/button'
-import type { User } from '@/types'
+import { Button } from '@/components/button';
+import type { User } from '@/types';
 
 // Avoid
-import { Button } from '../../components/button'
+import { Button } from '../../components/button';
 ```
 
 ### Formatting (Prettier)
 
 Prettier is configured with these rules:
+
 - Semi-colons: enabled
 - Single quotes: enabled
 - Tab width: 2
@@ -76,13 +77,13 @@ Order imports consistently:
 4. Relative imports
 
 ```typescript
-import { useState } from 'react'
-import { View, Text } from 'react-native'
-import { useRouter } from 'expo-router'
-import { useQuery } from '@tanstack/react-query'
-import { Button } from '@/components/button'
-import { useAuthStore } from '@/stores/auth'
-import './styles.css'
+import { useState } from 'react';
+import { View, Text } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useQuery } from '@tanstack/react-query';
+import { Button } from '@/components/button';
+import { useAuthStore } from '@/stores/auth';
+import './styles.css';
 ```
 
 ### Naming Conventions
@@ -98,15 +99,21 @@ import './styles.css'
 #### Core Rendering (CRITICAL)
 
 - **Never use `&&` with falsy values**: React Native crashes on `0` or `""` rendered as text
+
 ```tsx
 // Bad - crashes if count is 0
-{count && <Text>{count}</Text>}
+{
+  count && <Text>{count}</Text>;
+}
 
 // Good
-{count > 0 ? <Text>{count}</Text> : null}
+{
+  count > 0 ? <Text>{count}</Text> : null;
+}
 ```
 
 - **Wrap strings in Text**: Direct string children of View cause crashes
+
 ```tsx
 // Bad
 <View>Hello</View>
@@ -140,7 +147,7 @@ renderItem={({ item }) => (
 useAnimatedStyle(() => ({
   transform: [{ scale: withTiming(pressed ? 0.95 : 1) }],
   opacity: withTiming(pressed ? 0.8 : 1),
-}))
+}));
 ```
 
 #### Navigation
@@ -156,10 +163,10 @@ useAnimatedStyle(() => ({
 
 ```tsx
 // Good - derive value
-const fullName = `${firstName} ${lastName}`
+const fullName = `${firstName} ${lastName}`;
 
 // Good - dispatch updater
-setCount((prev) => prev + 1)
+setCount((prev) => prev + 1);
 ```
 
 ### Error Handling
@@ -170,10 +177,10 @@ setCount((prev) => prev + 1)
 
 ```typescript
 try {
-  await fetchData()
+  await fetchData();
 } catch (error) {
-  console.error('Failed to fetch:', error)
-  setError('Unable to load data. Please try again.')
+  console.error('Failed to fetch:', error);
+  setError('Unable to load data. Please try again.');
 }
 ```
 
@@ -205,6 +212,20 @@ src/
 - Use clear, concise commit messages
 - Follow conventional commits format: `type(scope): description`
 - Types: feat, fix, refactor, style, docs, test, chore
+
+## Non-Negotiable Rules
+
+1. **Always commit after each task**: After completing any task (no matter how small), always create a commit with a descriptive message. Do NOT wait for the user to ask.
+
+2. **Never ask for commit permission**: Commits are automatic. If you completed work, commit it immediately.
+
+3. **Run lint and typecheck before commit**: Always run `npm run lint` and `npx tsc --noEmit` before committing. Fix any errors first.
+
+4. **Run format before commit**: Always run `npm run format` before committing to ensure consistent code style.
+
+5. **Never skip quality checks**: If lint or typecheck fails, fix the issues before committing.
+
+6. **Commit message format**: Use clear, descriptive messages following conventional commits.
 
 ## Additional Resources
 

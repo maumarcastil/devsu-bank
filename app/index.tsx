@@ -1,4 +1,4 @@
-import { ProductList } from '@/src/components/features/products/ProductList';
+import { ProductList } from '@/components/features/products/ProductList';
 import { StyleSheet, View } from 'react-native';
 
 export default function Home() {

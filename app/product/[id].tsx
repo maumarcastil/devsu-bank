@@ -1,10 +1,11 @@
 import { ScrollView, StyleSheet, View, Pressable } from 'react-native';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Text } from '@/components/ui/text';
 import { useTheme } from '@/stores/theme-store';
 
 export default function ProductDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
   const { colors } = useTheme();
 
   const detailValues = {
@@ -73,6 +74,7 @@ export default function ProductDetail() {
 
       <View style={styles.actions}>
         <Pressable
+          onPress={() => router.push(`/product/${id}/edit`)}
           style={({ pressed }) => [
             styles.actionButton,
             { backgroundColor: colors.surface, borderColor: colors.border },

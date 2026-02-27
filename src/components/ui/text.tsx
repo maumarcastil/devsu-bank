@@ -26,14 +26,5 @@ export function Text({ variant = 'body', color = 'text', style, ...props }: AppT
     label: { fontSize: 12, fontWeight: '500' as const },
   };
 
-  return (
-    <RNText
-      style={[
-        variantStyles[variant],
-        { color: colorMap[color] },
-        style,
-      ]}
-      {...props}
-    />
-  );
+  return <RNText style={[variantStyles[variant], { color: colorMap[color] }, style]} {...props} />;
 }

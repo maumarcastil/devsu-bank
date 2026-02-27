@@ -1,31 +1,46 @@
-import { create } from 'zustand';
 import { useColorScheme } from 'react-native';
-import { colors, ThemeMode, ThemeColors } from '../constants/theme';
+import { create } from 'zustand';
 
-interface ThemeState {
+import { colors, ThemeColors, ThemeMode } from '../constants/theme';
+
+type ThemeState = {
   mode: ThemeMode;
+  hasUserSelected: boolean;
   colors: ThemeColors;
   toggleTheme: () => void;
   setTheme: (mode: ThemeMode) => void;
-}
+};
 
-const getInitialMode = (): ThemeMode => {
-  const systemColorScheme = useColorScheme();
-  return systemColorScheme === 'dark' ? 'dark' : 'light';
+const getInitialTheme = (): ThemeMode => {
+  return 'light';
 };
 
 export const useThemeStore = create<ThemeState>((set) => ({
-  mode: getInitialMode(),
-  colors: colors[getInitialMode()],
+  mode: getInitialTheme(),
+  hasUserSelected: false,
+  colors: colors[getInitialTheme()],
   toggleTheme: () =>
     set((state) => {
       const newMode = state.mode === 'light' ? 'dark' : 'light';
-      return { mode: newMode, colors: colors[newMode] };
+      return { mode: newMode, hasUserSelected: true, colors: colors[newMode] };
     }),
-  setTheme: (mode) => set({ mode, colors: colors[mode] }),
+  setTheme: (mode) => set({ mode, hasUserSelected: true, colors: colors[mode] }),
 }));
 
 export const useTheme = () => {
-  const { mode, colors, toggleTheme, setTheme } = useThemeStore();
-  return { mode, colors, toggleTheme, setTheme };
+  const systemColorScheme = useColorScheme();
+  const { mode, hasUserSelected, toggleTheme, setTheme } = useThemeStore();
+
+  const resolvedMode: ThemeMode = hasUserSelected
+    ? mode
+    : systemColorScheme === 'dark'
+      ? 'dark'
+      : mode;
+
+  return {
+    mode: resolvedMode,
+    colors: colors[resolvedMode],
+    toggleTheme,
+    setTheme,
+  };
 };

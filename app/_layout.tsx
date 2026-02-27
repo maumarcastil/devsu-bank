@@ -1,26 +1,21 @@
 import { Stack } from 'expo-router';
 import { useTheme } from '../src/stores/theme-store';
 import { Pressable, Text, StyleSheet } from 'react-native';
+import { QueryProvider } from '@/providers/query-provider';
 
 function HeaderRight() {
   const { mode, toggleTheme } = useTheme();
-  
+
   return (
-    <Pressable 
-      onPress={toggleTheme} 
-      style={styles.toggleButton}
-      hitSlop={8}
-    >
-      <Text style={styles.toggleText}>
-        {mode === 'light' ? '🌙' : '☀️'}
-      </Text>
+    <Pressable onPress={toggleTheme} style={styles.toggleButton} hitSlop={8}>
+      <Text style={styles.toggleText}>{mode === 'light' ? '🌙' : '☀️'}</Text>
     </Pressable>
   );
 }
 
 function RootLayoutNav() {
   const { colors } = useTheme();
-  
+
   return (
     <Stack
       screenOptions={{
@@ -52,7 +47,11 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
-  return <RootLayoutNav />;
+  return (
+    <QueryProvider>
+      <RootLayoutNav />
+    </QueryProvider>
+  );
 }
 
 const styles = StyleSheet.create({

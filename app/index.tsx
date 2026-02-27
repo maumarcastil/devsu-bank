@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { ProductList } from '@/src/components/features/products/ProductList';
+import { StyleSheet, View } from 'react-native';
 
 export default function Home() {
   return (
     <View style={styles.container}>
-      <Text>DevSu Bank</Text>
+      <ProductList />
     </View>
   );
 }
@@ -11,7 +12,6 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#F2F2F7',
   },
 });

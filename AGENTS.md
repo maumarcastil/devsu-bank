@@ -99,15 +99,15 @@ export default function TabLayout() {
 
 ```typescript
 // src/stores/auth-store.ts
-import { create } from 'zustand'
-import * as SecureStore from 'expo-secure-store'
+import { create } from 'zustand';
+import * as SecureStore from 'expo-secure-store';
 
 interface AuthState {
-  user: User | null
-  isLoading: boolean
-  signIn: (credentials: Credentials) => Promise<void>
-  signOut: () => Promise<void>
-  checkAuth: () => Promise<void>
+  user: User | null;
+  isLoading: boolean;
+  signIn: (credentials: Credentials) => Promise<void>;
+  signOut: () => Promise<void>;
+  checkAuth: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -116,56 +116,58 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   checkAuth: async () => {
     try {
-      const token = await SecureStore.getItemAsync('authToken')
+      const token = await SecureStore.getItemAsync('authToken');
       if (token) {
-        const user = await api.getUser(token)
-        set({ user })
+        const user = await api.getUser(token);
+        set({ user });
       }
     } catch {
-      await SecureStore.deleteItemAsync('authToken')
+      await SecureStore.deleteItemAsync('authToken');
     } finally {
-      set({ isLoading: false })
+      set({ isLoading: false });
     }
   },
 
   signIn: async (credentials) => {
-    const { token, user } = await api.login(credentials)
-    await SecureStore.setItemAsync('authToken', token)
-    set({ user })
+    const { token, user } = await api.login(credentials);
+    await SecureStore.setItemAsync('authToken', token);
+    set({ user });
   },
 
   signOut: async () => {
-    await SecureStore.deleteItemAsync('authToken')
-    set({ user: null })
+    await SecureStore.deleteItemAsync('authToken');
+    set({ user: null });
   },
-}))
+}));
 ```
 
 ### 3. API Service with React Query
 
 ```typescript
 // src/services/api/client.ts
-import { create } from 'zustand'
+import { create } from 'zustand';
 
 interface ApiClient {
-  get: <T>(endpoint: string) => Promise<T>
-  post: <T>(endpoint: string, data: unknown) => Promise<T>
+  get: <T>(endpoint: string) => Promise<T>;
+  post: <T>(endpoint: string, data: unknown) => Promise<T>;
 }
 
 export const useApiClient = create<ApiClient>(() => ({
   get: async (endpoint) => {
-    const token = await SecureStore.getItemAsync('authToken')
+    const token = await SecureStore.getItemAsync('authToken');
     const response = await fetch(`${API_URL}${endpoint}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-    })
-    if (!response.ok) throw new Error('API Error')
-    return response.json()
+    });
+    if (!response.ok) throw new Error('API Error');
+    return response.json();
   },
-  post: async (endpoint, data) => { /* ... */ },
-}))
+  post: async (endpoint, data) => {
+    /* ... */
+  },
+}));
 ```
 
 ### 4. Query Provider Setup
@@ -201,25 +203,27 @@ export function QueryProvider({ children }) {
 
 ```typescript
 // src/services/native/haptics.ts
-import * as Haptics from 'expo-haptics'
-import { Platform } from 'react-native'
+import * as Haptics from 'expo-haptics';
+import { Platform } from 'react-native';
 
 export const haptics = {
   light: () => Platform.OS !== 'web' && Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light),
-  success: () => Platform.OS !== 'web' && Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
-  error: () => Platform.OS !== 'web' && Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error),
-}
+  success: () =>
+    Platform.OS !== 'web' && Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
+  error: () =>
+    Platform.OS !== 'web' && Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error),
+};
 
 // src/services/native/biometrics.ts
-import * as LocalAuthentication from 'expo-local-authentication'
+import * as LocalAuthentication from 'expo-local-authentication';
 
 export async function authenticateWithBiometrics(): Promise<boolean> {
-  const hasHardware = await LocalAuthentication.hasHardwareAsync()
-  if (!hasHardware) return false
-  const isEnrolled = await LocalAuthentication.isEnrolledAsync()
-  if (!isEnrolled) return false
-  const result = await LocalAuthentication.authenticateAsync({ promptMessage: 'Authenticate' })
-  return result.success
+  const hasHardware = await LocalAuthentication.hasHardwareAsync();
+  if (!hasHardware) return false;
+  const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+  if (!isEnrolled) return false;
+  const result = await LocalAuthentication.authenticateAsync({ promptMessage: 'Authenticate' });
+  return result.success;
 }
 ```
 
@@ -312,31 +316,31 @@ export function AccountList({ accounts, onAccountPress }) {
 
 ## Routing Rules
 
-| Pattern | File | Description |
-|---------|------|-------------|
-| `/` | `app/(tabs)/home/index.tsx` | Home screen |
-| `/accounts` | `app/(tabs)/accounts/index.tsx` | Accounts list |
-| `/accounts/[id]` | `app/(tabs)/accounts/[id].tsx` | Account detail |
-| `/transfers` | `app/(tabs)/transfers/index.tsx` | Transfers |
-| `/login` | `app/(auth)/login.tsx` | Login screen |
-| `/(modal)/pin` | `app/(modal)/pin.tsx` | PIN modal |
+| Pattern          | File                             | Description    |
+| ---------------- | -------------------------------- | -------------- |
+| `/`              | `app/(tabs)/home/index.tsx`      | Home screen    |
+| `/accounts`      | `app/(tabs)/accounts/index.tsx`  | Accounts list  |
+| `/accounts/[id]` | `app/(tabs)/accounts/[id].tsx`   | Account detail |
+| `/transfers`     | `app/(tabs)/transfers/index.tsx` | Transfers      |
+| `/login`         | `app/(auth)/login.tsx`           | Login screen   |
+| `/(modal)/pin`   | `app/(modal)/pin.tsx`            | PIN modal      |
 
 ### Navigation
 
 ```typescript
-import { router } from 'expo-router'
+import { router } from 'expo-router';
 
 // Push screen
-router.push('/accounts/123')
+router.push('/accounts/123');
 
 // Replace (no back)
-router.replace('/login')
+router.replace('/login');
 
 // Go back
-router.back()
+router.back();
 
 // With params
-router.push({ pathname: '/transfers', params: { from: 'checking' } })
+router.push({ pathname: '/transfers', params: { from: 'checking' } });
 ```
 
 ---
@@ -386,12 +390,12 @@ eas submit --platform ios
 
 ## State Management Strategy
 
-| Data Type | Solution |
-|-----------|----------|
-| Auth state | Zustand + SecureStore |
-| Server state | React Query |
-| UI state | Zustand |
-| Form state | React Hook Form (if needed) |
+| Data Type    | Solution                    |
+| ------------ | --------------------------- |
+| Auth state   | Zustand + SecureStore       |
+| Server state | React Query                 |
+| UI state     | Zustand                     |
+| Form state   | React Hook Form (if needed) |
 
 ---
 
@@ -408,7 +412,7 @@ export const colors = {
   success: '#34C759',
   error: '#FF3B30',
   warning: '#FF9500',
-}
+};
 
 export const spacing = {
   xs: 4,
@@ -416,7 +420,7 @@ export const spacing = {
   md: 16,
   lg: 24,
   xl: 32,
-}
+};
 ```
 
 ---

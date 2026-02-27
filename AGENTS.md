@@ -1,5 +1,7 @@
 # DevSu Bank - React Native Architecture
 
+> **Nota**: Este documento contiene los **lineamientos y ejemplos** a seguir para el desarrollo del proyecto. El estado actual del proyecto es una base mínima que se irá construyendo progresivamente siguiendo estas guías.
+
 ## Project Overview
 
 - **Type**: Mobile Banking App (Expo)

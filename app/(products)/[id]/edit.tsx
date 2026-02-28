@@ -1,50 +1,14 @@
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { format, parse, addYears, isValid } from 'date-fns';
 import { Text } from '@/components/ui/text';
 import { DatePickerInput } from '@/components/ui/date-picker-input';
 import { useTheme } from '@/stores/theme-store';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useUpdateProduct } from '@/hooks/useProducts';
 import { toast } from 'sonner-native';
-
-const DATE_FORMAT = 'yyyy-MM-dd';
-
-function getTodayString(): string {
-  return format(new Date(), DATE_FORMAT);
-}
-
-const productSchema = z.object({
-  id: z.string(),
-  name: z.string().min(5, 'Mínimo 5 caracteres').max(100, 'Máximo 100 caracteres'),
-  description: z.string().min(10, 'Mínimo 10 caracteres').max(200, 'Máximo 200 caracteres'),
-  logo: z.string().min(1, 'Requerido'),
-  date_release: z.string().refine((dateStr) => dateStr >= getTodayString(), {
-    message: 'Debe ser mayor o igual a la fecha actual',
-  }),
-  date_revision: z.string(),
-});
-
-type ProductFormData = z.infer<typeof productSchema>;
-
-function calculateRevisionDate(date_release: string): string {
-  if (!date_release) return '';
-  const parsed = parse(date_release, DATE_FORMAT, new Date());
-  if (!isValid(parsed)) return '';
-  return format(addYears(parsed, 1), DATE_FORMAT);
-}
-
-function normalizeDateString(dateStr: string): string {
-  if (!dateStr) return '';
-  // Si ya viene en formato YYYY-MM-DD lo devolvemos tal cual
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
-  // Si viene con hora (ISO completo), extraemos solo la parte de fecha local
-  const parsed = new Date(dateStr);
-  if (!isValid(parsed)) return '';
-  return format(parsed, DATE_FORMAT);
-}
+import { editProductSchema, type EditProductFormData } from '@/schemas/product.schema';
+import { calculateRevisionDate, normalizeDateString } from '@/utils/date.utils';
 
 export default function ProductEdit() {
   const { id, name, description, logo, date_release, date_revision } = useLocalSearchParams<{
@@ -58,7 +22,7 @@ export default function ProductEdit() {
   const router = useRouter();
   const { colors } = useTheme();
 
-  const defaultValues: ProductFormData = {
+  const defaultValues: EditProductFormData = {
     id: id || '',
     name: name || '',
     description: description || '',
@@ -73,8 +37,8 @@ export default function ProductEdit() {
     watch,
     reset,
     formState: { errors },
-  } = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
+  } = useForm<EditProductFormData>({
+    resolver: zodResolver(editProductSchema),
     defaultValues,
   });
 
@@ -82,7 +46,7 @@ export default function ProductEdit() {
 
   const { mutateAsync: updateProduct, isPending } = useUpdateProduct();
 
-  const onSubmit = async (data: ProductFormData) => {
+  const onSubmit = async (data: EditProductFormData) => {
     try {
       await updateProduct({
         id: data.id,

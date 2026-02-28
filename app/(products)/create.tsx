@@ -3,38 +3,12 @@ import { Text } from '@/components/ui/text';
 import { useCreateProduct, useVerifyProductId } from '@/hooks/useProducts';
 import { useTheme } from '@/stores/theme-store';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format, parse, addYears, isValid } from 'date-fns';
 import { Stack, useRouter } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { z } from 'zod';
 import { toast } from 'sonner-native';
-
-const DATE_FORMAT = 'yyyy-MM-dd';
-
-function getTodayString(): string {
-  return format(new Date(), DATE_FORMAT);
-}
-
-const productSchema = z.object({
-  id: z.string().min(1, 'Requerido'),
-  name: z.string().min(5, 'Mínimo 5 caracteres').max(100, 'Máximo 100 caracteres'),
-  description: z.string().min(10, 'Mínimo 10 caracteres').max(200, 'Máximo 200 caracteres'),
-  logo: z.string().min(1, 'Requerido'),
-  date_release: z.string().refine((dateStr) => dateStr >= getTodayString(), {
-    message: 'Debe ser mayor o igual a la fecha actual',
-  }),
-  date_revision: z.string(),
-});
-
-type ProductFormData = z.infer<typeof productSchema>;
-
-function calculateRevisionDate(date_release: string): string {
-  if (!date_release) return '';
-  const parsed = parse(date_release, DATE_FORMAT, new Date());
-  if (!isValid(parsed)) return '';
-  return format(addYears(parsed, 1), DATE_FORMAT);
-}
+import { productSchema, type ProductFormData } from '@/schemas/product.schema';
+import { calculateRevisionDate } from '@/utils/date.utils';
 
 export default function ProductCreate() {
   const router = useRouter();

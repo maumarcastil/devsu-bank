@@ -2,10 +2,10 @@ import { Text } from '@/components/ui/text';
 import { useDeleteProduct, useProduct } from '@/hooks/useProducts';
 import { useTheme } from '@/stores/theme-store';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
-import { format, parse, isValid } from 'date-fns';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { formatDisplayDate } from '@/utils/date.utils';
 
 export default function ProductDetail() {
   const router = useRouter();
@@ -17,18 +17,11 @@ export default function ProductDetail() {
   const { data: product, isLoading, error } = useProduct(id);
   const { mutate: deleteProduct, isPending, isSuccess } = useDeleteProduct();
 
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return '---';
-    const parsed = parse(dateStr, 'yyyy-MM-dd', new Date());
-    if (!isValid(parsed)) return '---';
-    return format(parsed, 'dd/MM/yyyy');
-  };
-
   const detailValues = {
     nombre: product?.name ?? '---',
     descripcion: product?.description ?? '---',
-    liberacion: formatDate(product?.date_release ?? ''),
-    revision: formatDate(product?.date_revision ?? ''),
+    liberacion: formatDisplayDate(product?.date_release ?? ''),
+    revision: formatDisplayDate(product?.date_revision ?? ''),
     logo: product?.logo ?? '',
   };
 

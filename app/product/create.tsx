@@ -1,28 +1,29 @@
-import { ScrollView, StyleSheet, View, Pressable, TextInput } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
-import { Text } from '@/components/ui/text';
 import { DatePickerInput } from '@/components/ui/date-picker-input';
+import { Text } from '@/components/ui/text';
+import { useCreateProduct, useVerifyProductId } from '@/hooks/useProducts';
 import { useTheme } from '@/stores/theme-store';
-import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Stack, useRouter } from 'expo-router';
+import { Controller, useForm } from 'react-hook-form';
+import { Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { z } from 'zod';
 
 const productSchema = z.object({
   id: z.string().min(1, 'Requerido'),
-  nombre: z.string().min(5, 'Mínimo 5 caracteres').max(100, 'Máximo 100 caracteres'),
-  descripcion: z.string().min(10, 'Mínimo 10 caracteres').max(200, 'Máximo 200 caracteres'),
+  name: z.string().min(5, 'Mínimo 5 caracteres').max(100, 'Máximo 100 caracteres'),
+  description: z.string().min(10, 'Mínimo 10 caracteres').max(200, 'Máximo 200 caracteres'),
   logo: z.string().min(1, 'Requerido'),
-  fechaLiberacion: z.string().refine((date) => new Date(date) >= new Date(), {
+  date_release: z.string().refine((date) => new Date(date) >= new Date(), {
     message: 'Debe ser mayor o igual a la fecha actual',
   }),
-  fechaRevision: z.string(),
+  date_revision: z.string(),
 });
 
 type ProductFormData = z.infer<typeof productSchema>;
 
-function calculateRevisionDate(liberacion: string): string {
-  if (!liberacion) return '';
-  const date = new Date(liberacion);
+function calculateRevisionDate(date_release: string): string {
+  if (!date_release) return '';
+  const date = new Date(date_release);
   date.setFullYear(date.getFullYear() + 1);
   return date.toISOString().split('T')[0];
 }
@@ -33,11 +34,11 @@ export default function ProductCreate() {
 
   const defaultValues: ProductFormData = {
     id: '',
-    nombre: '',
-    descripcion: '',
+    name: '',
+    description: '',
     logo: '',
-    fechaLiberacion: '',
-    fechaRevision: '',
+    date_release: '',
+    date_revision: '',
   };
 
   const {
@@ -45,17 +46,40 @@ export default function ProductCreate() {
     handleSubmit,
     watch,
     reset,
+    setError,
     formState: { errors },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues,
   });
+  const id = watch('id');
+  const fechaLiberacion = watch('date_release');
 
-  const fechaLiberacion = watch('fechaLiberacion');
+  const { refetch: verifyId } = useVerifyProductId(id);
+  const { mutateAsync: createProduct, isPending } = useCreateProduct();
 
-  const onSubmit = (_data: ProductFormData) => {
-    console.log('Form submitted:', _data);
-    router.back();
+  const onSubmit = async (data: ProductFormData) => {
+    try {
+      const { data: exists } = await verifyId();
+
+      if (exists) {
+        setError('id', { message: 'El ID ya existe' });
+        return;
+      }
+
+      await createProduct({
+        id: data.id,
+        name: data.name,
+        description: data.description,
+        logo: data.logo,
+        date_release: data.date_release,
+        date_revision: calculateRevisionDate(data.date_release),
+      });
+      Alert.alert('Éxito', 'Producto creado exitosamente');
+      router.back();
+    } catch {
+      Alert.alert('Error', 'Error al crear el producto. Intenta de nuevo.');
+    }
   };
 
   const onReset = () => {
@@ -78,12 +102,17 @@ export default function ProductCreate() {
           name="id"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              style={[styles.input, { backgroundColor: colors.surface, color: colors.text }]}
+              style={[
+                styles.input,
+                { backgroundColor: colors.surface, color: colors.text },
+                isPending && styles.inputDisabled,
+              ]}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
               placeholder="Ingrese ID"
               placeholderTextColor={colors.textMuted}
+              editable={!isPending}
             />
           )}
         />
@@ -94,32 +123,38 @@ export default function ProductCreate() {
         </Text>
         <Controller
           control={control}
-          name="nombre"
+          name="name"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              style={[styles.input, { backgroundColor: colors.surface, color: colors.text }]}
+              style={[
+                styles.input,
+                { backgroundColor: colors.surface, color: colors.text },
+                isPending && styles.inputDisabled,
+              ]}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
               placeholder="Ingrese nombre"
               placeholderTextColor={colors.textMuted}
+              editable={!isPending}
             />
           )}
         />
-        {errors.nombre && <Text style={styles.error}>{errors.nombre.message}</Text>}
+        {errors.name && <Text style={styles.error}>{errors.name.message}</Text>}
 
         <Text variant="label" color="muted" style={styles.label}>
           Descripción
         </Text>
         <Controller
           control={control}
-          name="descripcion"
+          name="description"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
               style={[
                 styles.input,
                 styles.textArea,
                 { backgroundColor: colors.surface, color: colors.text },
+                isPending && styles.inputDisabled,
               ]}
               onBlur={onBlur}
               onChangeText={onChange}
@@ -128,10 +163,11 @@ export default function ProductCreate() {
               numberOfLines={3}
               placeholder="Ingrese descripción"
               placeholderTextColor={colors.textMuted}
+              editable={!isPending}
             />
           )}
         />
-        {errors.descripcion && <Text style={styles.error}>{errors.descripcion.message}</Text>}
+        {errors.description && <Text style={styles.error}>{errors.description.message}</Text>}
 
         <Text variant="label" color="muted" style={styles.label}>
           Logo
@@ -141,12 +177,17 @@ export default function ProductCreate() {
           name="logo"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              style={[styles.input, { backgroundColor: colors.surface, color: colors.text }]}
+              style={[
+                styles.input,
+                { backgroundColor: colors.surface, color: colors.text },
+                isPending && styles.inputDisabled,
+              ]}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
               placeholder="URL del logo"
               placeholderTextColor={colors.textMuted}
+              editable={!isPending}
             />
           )}
         />
@@ -157,19 +198,18 @@ export default function ProductCreate() {
         </Text>
         <Controller
           control={control}
-          name="fechaLiberacion"
+          name="date_release"
           render={({ field: { onChange, value } }) => (
             <DatePickerInput
               value={value}
               onChange={onChange}
               placeholder="YYYY-MM-DD"
               minimumDate={new Date()}
+              editable={!isPending}
             />
           )}
         />
-        {errors.fechaLiberacion && (
-          <Text style={styles.error}>{errors.fechaLiberacion.message}</Text>
-        )}
+        {errors.date_release && <Text style={styles.error}>{errors.date_release.message}</Text>}
 
         <Text variant="label" color="muted" style={styles.label}>
           Fecha Revisión
@@ -184,6 +224,7 @@ export default function ProductCreate() {
       <View style={styles.actions}>
         <Pressable
           onPress={handleSubmit(onSubmit)}
+          disabled={isPending}
           style={({ pressed }) => [
             styles.actionButton,
             { backgroundColor: '#FFD54F', borderColor: '#FFD54F' },
@@ -191,11 +232,12 @@ export default function ProductCreate() {
           ]}
         >
           <Text variant="body" style={{ color: '#000', fontWeight: '600' }}>
-            Enviar
+            {isPending ? 'Guardando...' : 'Enviar'}
           </Text>
         </Pressable>
         <Pressable
           onPress={onReset}
+          disabled={isPending}
           style={({ pressed }) => [
             styles.actionButton,
             { backgroundColor: colors.surface, borderColor: colors.border },

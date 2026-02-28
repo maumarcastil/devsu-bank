@@ -28,7 +28,7 @@ export const useCreateProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (product: Omit<Product, 'id'>) => productsService.create(product),
+    mutationFn: (product: Product) => productsService.create(product),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: PRODUCT_KEYS.list() });
     },
@@ -56,5 +56,13 @@ export const useDeleteProduct = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: PRODUCT_KEYS.list() });
     },
+  });
+};
+
+export const useVerifyProductId = (id: string) => {
+  return useQuery({
+    queryKey: ['product', 'verify', id],
+    queryFn: () => productsService.verifyId(id),
+    enabled: false,
   });
 };

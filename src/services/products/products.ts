@@ -10,8 +10,12 @@ export const productsService = {
     return apiClient.get<{ data: Product }>(`/bp/products/${id}`);
   },
 
-  create: async (product: Omit<Product, 'id'>): Promise<{ data: Product }> => {
+  create: async (product: Product): Promise<{ data: Product }> => {
     return apiClient.post<{ data: Product }>('/bp/products', product);
+  },
+
+  verifyId: async (id: string): Promise<{ data: boolean }> => {
+    return apiClient.get<{ data: boolean }>(`/bp/products/verification/${id}`);
   },
 
   update: async (id: string, product: Product): Promise<{ data: Product }> => {

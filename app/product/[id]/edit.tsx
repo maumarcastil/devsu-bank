@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, View, Pressable, TextInput } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Text } from '@/components/ui/text';
+import { DatePickerInput } from '@/components/ui/date-picker-input';
 import { useTheme } from '@/stores/theme-store';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -159,14 +160,12 @@ export default function ProductEdit() {
         <Controller
           control={control}
           name="fechaLiberacion"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={[styles.input, { backgroundColor: colors.surface, color: colors.text }]}
-              onBlur={onBlur}
-              onChangeText={onChange}
+          render={({ field: { onChange, value } }) => (
+            <DatePickerInput
               value={value}
+              onChange={onChange}
               placeholder="YYYY-MM-DD"
-              placeholderTextColor={colors.textMuted}
+              minimumDate={new Date()}
             />
           )}
         />
@@ -177,24 +176,11 @@ export default function ProductEdit() {
         <Text variant="label" color="muted" style={styles.label}>
           Fecha Revisión
         </Text>
-        <Controller
-          control={control}
-          name="fechaRevision"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={[
-                styles.input,
-                styles.inputDisabled,
-                { backgroundColor: colors.surface, color: colors.textMuted },
-              ]}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={calculateRevisionDate(fechaLiberacion) || value}
-              editable={false}
-            />
-          )}
+        <DatePickerInput
+          value={calculateRevisionDate(fechaLiberacion)}
+          onChange={() => {}}
+          editable={false}
         />
-        {errors.fechaRevision && <Text style={styles.error}>{errors.fechaRevision.message}</Text>}
       </View>
 
       <View style={styles.actions}>

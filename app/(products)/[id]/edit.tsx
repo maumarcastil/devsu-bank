@@ -70,6 +70,7 @@ export default function ProductEdit() {
     control,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -101,7 +102,7 @@ export default function ProductEdit() {
   };
 
   const onReset = () => {
-    router.back();
+    reset(defaultValues);
   };
 
   return (
@@ -109,7 +110,12 @@ export default function ProductEdit() {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Stack.Screen options={{ title: 'Editar Producto' }} />
 
-        <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1 },
+          ]}
+        >
           <Text variant="label" color="muted">
             ID
           </Text>
@@ -121,7 +127,11 @@ export default function ProductEdit() {
                 style={[
                   styles.input,
                   styles.inputDisabled,
-                  { backgroundColor: colors.surface, color: colors.textMuted },
+                  {
+                    backgroundColor: colors.surface,
+                    color: colors.textMuted,
+                    borderColor: colors.border,
+                  },
                 ]}
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -141,7 +151,11 @@ export default function ProductEdit() {
               <TextInput
                 style={[
                   styles.input,
-                  { backgroundColor: colors.surface, color: colors.text },
+                  {
+                    backgroundColor: colors.surface,
+                    color: colors.text,
+                    borderColor: colors.border,
+                  },
                   isPending && styles.inputDisabled,
                 ]}
                 onBlur={onBlur}
@@ -153,7 +167,11 @@ export default function ProductEdit() {
               />
             )}
           />
-          {errors.name && <Text style={styles.error}>{errors.name.message}</Text>}
+          {errors.name && (
+            <Text style={{ color: colors.error, fontSize: 12, marginBottom: 8 }}>
+              {errors.name.message}
+            </Text>
+          )}
 
           <Text variant="label" color="muted" style={styles.label}>
             Descripción
@@ -180,7 +198,11 @@ export default function ProductEdit() {
               />
             )}
           />
-          {errors.description && <Text style={styles.error}>{errors.description.message}</Text>}
+          {errors.description && (
+            <Text style={{ color: colors.error, fontSize: 12, marginBottom: 8 }}>
+              {errors.description.message}
+            </Text>
+          )}
 
           <Text variant="label" color="muted" style={styles.label}>
             Logo
@@ -192,7 +214,11 @@ export default function ProductEdit() {
               <TextInput
                 style={[
                   styles.input,
-                  { backgroundColor: colors.surface, color: colors.text },
+                  {
+                    backgroundColor: colors.surface,
+                    color: colors.text,
+                    borderColor: colors.border,
+                  },
                   isPending && styles.inputDisabled,
                 ]}
                 onBlur={onBlur}
@@ -204,7 +230,11 @@ export default function ProductEdit() {
               />
             )}
           />
-          {errors.logo && <Text style={styles.error}>{errors.logo.message}</Text>}
+          {errors.logo && (
+            <Text style={{ color: colors.error, fontSize: 12, marginBottom: 8 }}>
+              {errors.logo.message}
+            </Text>
+          )}
 
           <Text variant="label" color="muted" style={styles.label}>
             Fecha Liberación
@@ -222,7 +252,11 @@ export default function ProductEdit() {
               />
             )}
           />
-          {errors.date_release && <Text style={styles.error}>{errors.date_release.message}</Text>}
+          {errors.date_release && (
+            <Text style={{ color: colors.error, fontSize: 12, marginBottom: 8 }}>
+              {errors.date_release.message}
+            </Text>
+          )}
 
           <Text variant="label" color="muted" style={styles.label}>
             Fecha Revisión

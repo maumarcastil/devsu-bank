@@ -1,45 +1,26 @@
 import { useCallback, useMemo, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { useTheme } from '../../../stores/theme-store';
-import { Input } from '../../ui';
+
+import { EmptyState, Input, Skeleton } from '@/components/ui';
+
 import { ProductCard } from './ProductCard';
 
-interface Product {
-  id: string;
-  name: string;
-}
+import type { Product } from '@/services/products/types';
 
-const mockProducts: Product[] = [
-  { id: '001', name: 'Cuenta Corriente' },
-  { id: '002', name: 'Cuenta de Ahorros' },
-  { id: '003', name: 'Tarjeta de Crédito' },
-  { id: '004', name: 'Tarjeta de Débito' },
-  { id: '005', name: 'Préstamo Personal' },
-  { id: '006', name: 'Inversión Plus' },
-  { id: '007', name: 'Seguros Bank' },
-  { id: '008', name: 'Cuenta Empresarial' },
-  { id: '009', name: 'Crédito Hipotecario' },
-  { id: '010', name: 'Crédito de Consumo' },
-  { id: '011', name: 'Fondo de Inversión' },
-  { id: '012', name: 'Depósito a Plazo' },
-  { id: '013', name: 'Seguro de Vida' },
-  { id: '014', name: 'Seguro de Auto' },
-  { id: '015', name: 'Seguro de Hogar' },
-  { id: '016', name: 'Tarjeta Prepago' },
-  { id: '017', name: 'Cuenta Digital' },
-  { id: '018', name: 'Préstamo Express' },
-  { id: '019', name: 'Línea de Crédito' },
-  { id: '020', name: 'Certificado de Depósito' },
-];
+import { useProducts } from '@/hooks/useProducts';
+import { useTheme } from '@/stores/theme-store';
 
 export function ProductList() {
   const { colors } = useTheme();
   const [search, setSearch] = useState('');
 
+  const { data: productsResponse, isLoading, isError } = useProducts();
+  const products = productsResponse?.data ?? [];
+
   const filteredProducts = useMemo(() => {
-    if (!search.trim()) return mockProducts;
-    return mockProducts.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
-  }, [search]);
+    if (!search.trim()) return products;
+    return products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+  }, [products, search]);
 
   const renderItem = useCallback(
     ({ item }: { item: Product }) => <ProductCard id={item.id} name={item.name} />,
@@ -47,6 +28,49 @@ export function ProductList() {
   );
 
   const keyExtractor = useCallback((item: Product) => item.id, []);
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={[styles.searchContainer, { backgroundColor: colors.card }]}>
+          <Skeleton height={44} borderRadius={8} />
+        </View>
+        <View style={styles.skeletonContainer}>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <View key={index} style={[styles.skeletonCard, { backgroundColor: colors.card }]}>
+              <Skeleton height={20} width="60%" />
+              <Skeleton height={16} width="40%" marginTop={8} />
+            </View>
+          ))}
+        </View>
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={[styles.searchContainer, { backgroundColor: colors.card }]}>
+          <Input placeholder="Buscar productos" value={search} onChangeText={setSearch} />
+        </View>
+        <EmptyState
+          title="Error al cargar"
+          message="No se pudieron cargar los productos. Intenta de nuevo."
+        />
+      </View>
+    );
+  }
+
+  if (!filteredProducts || filteredProducts.length === 0) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={[styles.searchContainer, { backgroundColor: colors.card }]}>
+          <Input placeholder="Buscar productos" value={search} onChangeText={setSearch} />
+        </View>
+        <EmptyState title="Sin productos" message="No hay productos disponibles en este momento." />
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -69,5 +93,13 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     padding: 16,
+  },
+  skeletonContainer: {
+    padding: 16,
+  },
+  skeletonCard: {
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
   },
 });

@@ -38,14 +38,14 @@ function RootLayoutNav() {
       }}
     >
       <Stack.Screen
-        name="index"
+        name="(products)/index"
         options={{
           headerRight: () => <HeaderRight />,
         }}
       />
-      <Stack.Screen name="product/create" />
-      <Stack.Screen name="product/[id]" />
-      <Stack.Screen name="product/[id]/edit" />
+      <Stack.Screen name="(products)/create" />
+      <Stack.Screen name="(products)/[id]/index" />
+      <Stack.Screen name="(products)/[id]/edit" />
     </Stack>
   );
 }

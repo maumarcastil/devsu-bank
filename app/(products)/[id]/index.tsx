@@ -156,7 +156,7 @@ export default function ProductDetail() {
               date_release: product?.date_release ?? '',
               date_revision: product?.date_revision ?? '',
             }).toString();
-            router.push(`/product/${id}/edit?${params}`);
+            router.push(`/${id}/edit?${params}`);
           }}
           style={({ pressed }) => [
             styles.button,

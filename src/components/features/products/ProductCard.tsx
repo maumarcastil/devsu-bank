@@ -12,7 +12,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
   const router = useRouter();
 
   const handlePress = () => {
-    router.push(`/product/${product.id}`);
+    router.push(`/${product.id}`);
   };
 
   return (

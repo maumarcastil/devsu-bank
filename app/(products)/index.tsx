@@ -13,7 +13,7 @@ export default function Home() {
       <ProductList />
       <View style={[styles.footer, { backgroundColor: colors.background }]}>
         <Pressable
-          onPress={() => router.push('/product/create')}
+          onPress={() => router.push('/create')}
           style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
         >
           <Text variant="body" style={styles.buttonText}>

@@ -1,7 +1,7 @@
-import { Stack } from 'expo-router';
-import { useTheme } from '../src/stores/theme-store';
-import { Pressable, Text, StyleSheet } from 'react-native';
 import { QueryProvider } from '@/providers/query-provider';
+import { Stack } from 'expo-router';
+import { Pressable, StyleSheet, Text } from 'react-native';
+import { useTheme } from '../src/stores/theme-store';
 
 function HeaderRight() {
   const { mode, toggleTheme } = useTheme();
@@ -42,6 +42,9 @@ function RootLayoutNav() {
           headerRight: () => <HeaderRight />,
         }}
       />
+      <Stack.Screen name="product/create" />
+      <Stack.Screen name="product/[id]" />
+      <Stack.Screen name="product/[id]/edit" />
     </Stack>
   );
 }

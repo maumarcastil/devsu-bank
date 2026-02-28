@@ -3,17 +3,16 @@ import { Text } from '@/components/ui/text';
 import { useCreateProduct, useVerifyProductId } from '@/hooks/useProducts';
 import { useTheme } from '@/stores/theme-store';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { format, parse, addYears, isValid } from 'date-fns';
 import { Stack, useRouter } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { z } from 'zod';
 
+const DATE_FORMAT = 'yyyy-MM-dd';
+
 function getTodayString(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return format(new Date(), DATE_FORMAT);
 }
 
 const productSchema = z.object({
@@ -31,9 +30,9 @@ type ProductFormData = z.infer<typeof productSchema>;
 
 function calculateRevisionDate(date_release: string): string {
   if (!date_release) return '';
-  const date = new Date(date_release);
-  date.setFullYear(date.getFullYear() + 1);
-  return date.toISOString().split('T')[0];
+  const parsed = parse(date_release, DATE_FORMAT, new Date());
+  if (!isValid(parsed)) return '';
+  return format(addYears(parsed, 1), DATE_FORMAT);
 }
 
 export default function ProductCreate() {

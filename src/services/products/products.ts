@@ -6,8 +6,8 @@ export const productsService = {
     return apiClient.get<ProductsResponse>('/bp/products');
   },
 
-  getById: async (id: string): Promise<{ data: Product }> => {
-    return apiClient.get<{ data: Product }>(`/bp/products/${id}`);
+  getById: async (id: string): Promise<Product> => {
+    return apiClient.get<Product>(`/bp/products/${id}`);
   },
 
   create: async (product: Product): Promise<{ data: Product }> => {

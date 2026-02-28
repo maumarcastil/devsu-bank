@@ -12,15 +12,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
   const router = useRouter();
 
   const handlePress = () => {
-    const params = new URLSearchParams({
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      logo: product.logo,
-      date_release: product.date_release,
-      date_revision: product.date_revision,
-    }).toString();
-    router.push(`/product/${product.id}?${params}`);
+    router.push(`/product/${product.id}`);
   };
 
   return (

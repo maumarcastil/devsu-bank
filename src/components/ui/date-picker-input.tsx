@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Platform, View } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { format, parse, isValid } from 'date-fns';
 import { Text } from './text';
 import { useTheme } from '../../stores/theme-store';
 
@@ -12,17 +13,16 @@ interface DatePickerInputProps {
   minimumDate?: Date;
 }
 
+const DATE_FORMAT = 'yyyy-MM-dd';
+
 function formatDateToString(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return format(date, DATE_FORMAT);
 }
 
 function parseStringToDate(dateString: string): Date {
   if (!dateString) return new Date();
-  const [year, month, day] = dateString.split('-').map(Number);
-  return new Date(year, month - 1, day);
+  const parsed = parse(dateString, DATE_FORMAT, new Date());
+  return isValid(parsed) ? parsed : new Date();
 }
 
 export function DatePickerInput({

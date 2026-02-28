@@ -1,34 +1,34 @@
 import { Text } from '@/components/ui/text';
+import { useProduct } from '@/hooks/useProducts';
 import { useTheme } from '@/stores/theme-store';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
+import { format, parse, isValid } from 'date-fns';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useRef } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 export default function ProductDetail() {
-  const { id, name, description, logo, date_release, date_revision } = useLocalSearchParams<{
-    id: string;
-    name: string;
-    description: string;
-    logo: string;
-    date_release: string;
-    date_revision: string;
-  }>();
   const router = useRouter();
   const { colors } = useTheme();
+
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const { id } = useLocalSearchParams<{ id: string }>();
+
+  const { data: product, isLoading, error } = useProduct(id);
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '---';
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('es-ES');
+    const parsed = parse(dateStr, 'yyyy-MM-dd', new Date());
+    if (!isValid(parsed)) return '---';
+    return format(parsed, 'dd/MM/yyyy');
   };
 
   const detailValues = {
-    nombre: name ?? '---',
-    descripcion: description ?? '---',
-    liberacion: formatDate(date_release ?? ''),
-    revision: formatDate(date_revision ?? ''),
+    nombre: product?.name ?? '---',
+    descripcion: product?.description ?? '---',
+    liberacion: formatDate(product?.date_release ?? ''),
+    revision: formatDate(product?.date_revision ?? ''),
+    logo: product?.logo ?? '',
   };
 
   const infoRows = [
@@ -50,17 +50,46 @@ export default function ProductDetail() {
   }, []);
 
   const handleConfirmDelete = useCallback(() => {
-    // Aquí iría la lógica para eliminar el producto
     console.log('Eliminando producto:', id);
     bottomSheetRef.current?.close();
-    // Después de eliminar, navegar atrás
-    // router.back();
-  }, [id, router]);
+  }, [id]);
 
   const renderBackdrop = useCallback(
     (props: any) => <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} />,
     []
   );
+
+  if (isLoading) {
+    return (
+      <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
+        <Stack.Screen options={{ title: 'Cargando...' }} />
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
+        <Stack.Screen options={{ title: 'Error' }} />
+        <Text variant="body" color="muted">
+          Error al cargar el producto
+        </Text>
+        <Pressable
+          onPress={() => router.back()}
+          style={({ pressed }) => [
+            styles.actionButton,
+            { backgroundColor: colors.surface, borderColor: colors.border, marginTop: 16 },
+            pressed && styles.buttonPressed,
+          ]}
+        >
+          <Text variant="body" color="primary">
+            Volver
+          </Text>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -114,12 +143,11 @@ export default function ProductDetail() {
           <Pressable
             onPress={() => {
               const params = new URLSearchParams({
-                id: id ?? '',
-                name: name ?? '',
-                description: description ?? '',
-                logo: logo ?? '',
-                date_release: date_release ?? '',
-                date_revision: date_revision ?? '',
+                name: product?.name ?? '',
+                description: product?.description ?? '',
+                logo: product?.logo ?? '',
+                date_release: product?.date_release ?? '',
+                date_revision: product?.date_revision ?? '',
               }).toString();
               router.push(`/product/${id}/edit?${params}`);
             }}
@@ -206,6 +234,13 @@ export default function ProductDetail() {
 }
 
 const styles = StyleSheet.create({
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 24,
+    paddingHorizontal: 16,
+  },
   root: {
     paddingVertical: 24,
     paddingHorizontal: 16,

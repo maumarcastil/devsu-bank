@@ -1,10 +1,10 @@
 import { Text } from '@/components/ui/text';
-import { useProduct } from '@/hooks/useProducts';
+import { useDeleteProduct, useProduct } from '@/hooks/useProducts';
 import { useTheme } from '@/stores/theme-store';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import { format, parse, isValid } from 'date-fns';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 export default function ProductDetail() {
@@ -15,6 +15,7 @@ export default function ProductDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const { data: product, isLoading, error } = useProduct(id);
+  const { mutate: deleteProduct, isPending, isSuccess } = useDeleteProduct();
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '---';
@@ -49,10 +50,18 @@ export default function ProductDetail() {
     bottomSheetRef.current?.close();
   }, []);
 
+  useEffect(() => {
+    if (isSuccess) {
+      bottomSheetRef.current?.close();
+      router.back();
+    }
+  }, [isSuccess, router]);
+
   const handleConfirmDelete = useCallback(() => {
-    console.log('Eliminando producto:', id);
-    bottomSheetRef.current?.close();
-  }, [id]);
+    if (id) {
+      deleteProduct(id);
+    }
+  }, [id, deleteProduct]);
 
   const renderBackdrop = useCallback(
     (props: any) => <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} />,
@@ -200,15 +209,21 @@ export default function ProductDetail() {
           <View style={styles.bottomSheetActions}>
             <Pressable
               onPress={handleConfirmDelete}
+              disabled={isPending}
               style={({ pressed }) => [
                 styles.confirmButton,
                 { backgroundColor: '#FFD54F' },
                 pressed && styles.buttonPressed,
+                isPending && styles.buttonDisabled,
               ]}
             >
-              <Text variant="body" style={styles.confirmButtonText}>
-                Confirmar
-              </Text>
+              {isPending ? (
+                <ActivityIndicator size="small" color="#1a1a1a" />
+              ) : (
+                <Text variant="body" style={styles.confirmButtonText}>
+                  Confirmar
+                </Text>
+              )}
             </Pressable>
 
             <Pressable
@@ -353,6 +368,16 @@ const styles = StyleSheet.create({
   cancelButton: {
     borderRadius: 12,
     paddingVertical: 16,
+    alignItems: 'center',
+    borderWidth: 1,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  actionButton: {
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
     alignItems: 'center',
     borderWidth: 1,
   },

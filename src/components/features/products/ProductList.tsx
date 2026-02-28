@@ -23,7 +23,7 @@ export function ProductList() {
   }, [products, search]);
 
   const renderItem = useCallback(
-    ({ item }: { item: Product }) => <ProductCard id={item.id} name={item.name} />,
+    ({ item }: { item: Product }) => <ProductCard product={item} />,
     []
   );
 

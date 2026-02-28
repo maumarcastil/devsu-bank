@@ -28,17 +28,30 @@ function calculateRevisionDate(liberacion: string): string {
 }
 
 export default function ProductEdit() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, name, description, logo, date_release, date_revision } = useLocalSearchParams<{
+    id: string;
+    name: string;
+    description: string;
+    logo: string;
+    date_release: string;
+    date_revision: string;
+  }>();
   const router = useRouter();
   const { colors } = useTheme();
 
+  const formatDateForInput = (dateStr: string) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return date.toISOString().split('T')[0];
+  };
+
   const defaultValues: ProductFormData = {
     id: id || '',
-    nombre: 'Cuenta Corriente Plus',
-    descripcion: 'Cuenta transaccional sin comisiones por mantenimiento.',
-    logo: '',
-    fechaLiberacion: '2025-03-01',
-    fechaRevision: '2026-03-01',
+    nombre: name || '',
+    descripcion: description || '',
+    logo: logo || '',
+    fechaLiberacion: formatDateForInput(date_release ?? ''),
+    fechaRevision: formatDateForInput(date_revision ?? ''),
   };
 
   const {

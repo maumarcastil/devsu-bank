@@ -6,16 +6,29 @@ import { useCallback, useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 export default function ProductDetail() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, name, description, logo, date_release, date_revision } = useLocalSearchParams<{
+    id: string;
+    name: string;
+    description: string;
+    logo: string;
+    date_release: string;
+    date_revision: string;
+  }>();
   const router = useRouter();
   const { colors } = useTheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
 
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return '---';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('es-ES');
+  };
+
   const detailValues = {
-    nombre: 'Cuenta Corriente Plus',
-    descripcion: 'Cuenta transaccional sin comisiones por mantenimiento.',
-    liberacion: '01/03/2025',
-    revision: '12/03/2025',
+    nombre: name ?? '---',
+    descripcion: description ?? '---',
+    liberacion: formatDate(date_release ?? ''),
+    revision: formatDate(date_revision ?? ''),
   };
 
   const infoRows = [
@@ -99,7 +112,17 @@ export default function ProductDetail() {
 
         <View style={styles.actions}>
           <Pressable
-            onPress={() => router.push(`/product/${id}/edit`)}
+            onPress={() => {
+              const params = new URLSearchParams({
+                id: id ?? '',
+                name: name ?? '',
+                description: description ?? '',
+                logo: logo ?? '',
+                date_release: date_release ?? '',
+                date_revision: date_revision ?? '',
+              }).toString();
+              router.push(`/product/${id}/edit?${params}`);
+            }}
             style={({ pressed }) => [
               styles.actionButton,
               { backgroundColor: colors.surface, borderColor: colors.border },

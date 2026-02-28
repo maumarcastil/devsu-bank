@@ -1,18 +1,17 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
 import { productsService } from '@/services/products/products';
 import { Product } from '@/services/products/types';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const PRODUCT_KEYS = {
   all: ['products'] as const,
-  lists: () => [...PRODUCT_KEYS.all, 'list'] as const,
-  list: (filters: string) => [...PRODUCT_KEYS.lists(), { filters }] as const,
-  details: () => [...PRODUCT_KEYS.all, 'detail'] as const,
-  detail: (id: string) => [...PRODUCT_KEYS.details(), id] as const,
+  list: () => [...PRODUCT_KEYS.all, 'list'] as const,
+  detail: (id: string) => [...PRODUCT_KEYS.all, 'detail', id] as const,
 };
 
 export const useProducts = () => {
   return useQuery({
-    queryKey: PRODUCT_KEYS.list('all'),
+    queryKey: PRODUCT_KEYS.list(),
     queryFn: productsService.getAll,
   });
 };
@@ -31,7 +30,7 @@ export const useCreateProduct = () => {
   return useMutation({
     mutationFn: (product: Omit<Product, 'id'>) => productsService.create(product),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: PRODUCT_KEYS.lists() });
+      queryClient.invalidateQueries({ queryKey: PRODUCT_KEYS.list() });
     },
   });
 };
@@ -43,7 +42,7 @@ export const useUpdateProduct = () => {
     mutationFn: ({ id, product }: { id: string; product: Product }) =>
       productsService.update(id, product),
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: PRODUCT_KEYS.lists() });
+      queryClient.invalidateQueries({ queryKey: PRODUCT_KEYS.list() });
       queryClient.invalidateQueries({ queryKey: PRODUCT_KEYS.detail(id) });
     },
   });
@@ -55,7 +54,7 @@ export const useDeleteProduct = () => {
   return useMutation({
     mutationFn: (id: string) => productsService.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: PRODUCT_KEYS.lists() });
+      queryClient.invalidateQueries({ queryKey: PRODUCT_KEYS.list() });
     },
   });
 };

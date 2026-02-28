@@ -3,8 +3,8 @@ import { useDeleteProduct, useProduct } from '@/hooks/useProducts';
 import { useTheme } from '@/stores/theme-store';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useEffect, useRef } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { formatDisplayDate } from '@/utils/date.utils';
 
 export default function ProductDetail() {
@@ -16,6 +16,8 @@ export default function ProductDetail() {
 
   const { data: product, isLoading, error } = useProduct(id);
   const { mutate: deleteProduct, isPending, isSuccess } = useDeleteProduct();
+
+  const [imageError, setImageError] = useState(false);
 
   const detailValues = {
     nombre: product?.name ?? '---',
@@ -49,6 +51,10 @@ export default function ProductDetail() {
       router.back();
     }
   }, [isSuccess, router]);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [id]);
 
   const handleConfirmDelete = useCallback(() => {
     if (id) {
@@ -119,8 +125,22 @@ export default function ProductDetail() {
           </View>
 
           <View style={styles.logoSection}>
-            <View style={styles.logoPreview}>
-              <View style={styles.logoAccent} />
+            <View
+              style={[
+                styles.logoPreview,
+                { backgroundColor: detailValues.logo && !imageError ? colors.card : '#FFD54F' },
+              ]}
+            >
+              {detailValues.logo && !imageError ? (
+                <Image
+                  source={{ uri: detailValues.logo }}
+                  style={styles.logoImage}
+                  resizeMode="contain"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <View style={styles.logoAccent} />
+              )}
             </View>
           </View>
 
@@ -295,15 +315,20 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: 1.7,
     borderRadius: 12,
-    backgroundColor: '#FFD54F',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
   logoAccent: {
     width: '40%',
     height: 20,
     backgroundColor: '#FFFFFF80',
     borderRadius: 4,
+  },
+  logoImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 12,
   },
   footer: {
     paddingHorizontal: 16,

@@ -1,6 +1,7 @@
 import { QueryProvider } from '@/providers/query-provider';
 import { Stack } from 'expo-router';
 import { Pressable, StyleSheet, Text } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useTheme } from '../src/stores/theme-store';
 
 function HeaderRight() {
@@ -51,9 +52,11 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <QueryProvider>
-      <RootLayoutNav />
-    </QueryProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryProvider>
+        <RootLayoutNav />
+      </QueryProvider>
+    </GestureHandlerRootView>
   );
 }
 

@@ -1,8 +1,8 @@
 import { ProductList } from '@/components/features/products/ProductList';
-import { StyleSheet, View, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
 import { Text } from '@/components/ui/text';
 import { useTheme } from '@/stores/theme-store';
+import { useRouter } from 'expo-router';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 export default function Home() {
   const router = useRouter();
@@ -11,12 +11,12 @@ export default function Home() {
   return (
     <View style={styles.container}>
       <ProductList />
-      <View style={styles.footerBackground}>
+      <View style={[styles.footer, { backgroundColor: colors.background }]}>
         <Pressable
           onPress={() => router.push('/product/create')}
-          style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
+          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
         >
-          <Text variant="body" style={styles.fabText}>
+          <Text variant="body" style={styles.buttonText}>
             Nuevo Producto
           </Text>
         </Pressable>
@@ -30,20 +30,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F2F2F7',
   },
-  footerBackground: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+  footer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     backgroundColor: '#F2F2F7',
-    paddingBottom: 24,
-    paddingTop: 12,
   },
-  fab: {
-    position: 'absolute',
-    bottom: 24,
-    left: 16,
-    right: 16,
+  button: {
     backgroundColor: '#FFD54F',
     borderRadius: 12,
     paddingVertical: 16,
@@ -51,10 +43,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FFD54F',
   },
-  fabPressed: {
+  buttonPressed: {
     opacity: 0.8,
   },
-  fabText: {
+  buttonText: {
     color: '#000',
     fontWeight: '600',
   },

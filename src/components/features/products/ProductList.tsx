@@ -1,8 +1,8 @@
-import { useState, useMemo, useCallback } from 'react';
-import { FlatList, View, StyleSheet } from 'react-native';
-import { ProductCard } from './ProductCard';
-import { Input } from '../../ui';
+import { useCallback, useMemo, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { useTheme } from '../../../stores/theme-store';
+import { Input } from '../../ui';
+import { ProductCard } from './ProductCard';
 
 interface Product {
   id: string;
@@ -57,7 +57,6 @@ export function ProductList() {
         data={filteredProducts}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
-        contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
       />
     </View>
@@ -70,8 +69,5 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     padding: 16,
-  },
-  list: {
-    paddingBottom: 100,
   },
 });

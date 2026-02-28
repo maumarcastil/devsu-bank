@@ -1,4 +1,4 @@
-import { Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { format, parse, addYears, isValid } from 'date-fns';
 import { Text } from '@/components/ui/text';
@@ -8,6 +8,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useUpdateProduct } from '@/hooks/useProducts';
+import { toast } from 'sonner-native';
 
 const DATE_FORMAT = 'yyyy-MM-dd';
 
@@ -94,10 +95,10 @@ export default function ProductEdit() {
           date_revision: calculateRevisionDate(data.date_release),
         },
       });
-      Alert.alert('Éxito', 'Producto actualizado exitosamente');
+      toast.success('Producto actualizado exitosamente');
       router.back();
     } catch {
-      Alert.alert('Error', 'Error al actualizar el producto. Intenta de nuevo.');
+      toast.error('Error al actualizar el producto. Intenta de nuevo.');
     }
   };
 

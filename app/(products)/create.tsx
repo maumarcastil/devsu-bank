@@ -6,8 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { format, parse, addYears, isValid } from 'date-fns';
 import { Stack, useRouter } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { z } from 'zod';
+import { toast } from 'sonner-native';
 
 const DATE_FORMAT = 'yyyy-MM-dd';
 
@@ -82,10 +83,10 @@ export default function ProductCreate() {
         date_release: data.date_release,
         date_revision: calculateRevisionDate(data.date_release),
       });
-      Alert.alert('Éxito', 'Producto creado exitosamente');
+      toast.success('Producto creado exitosamente');
       router.back();
     } catch {
-      Alert.alert('Error', 'Error al crear el producto. Intenta de nuevo.');
+      toast.error('Error al crear el producto. Intenta de nuevo.');
     }
   };
 

@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { Pressable, StyleSheet, Text } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useTheme } from '../src/stores/theme-store';
+import { Toaster } from 'sonner-native';
 
 function HeaderRight() {
   const { mode, toggleTheme } = useTheme();
@@ -55,6 +56,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryProvider>
         <RootLayoutNav />
+        <Toaster />
       </QueryProvider>
     </GestureHandlerRootView>
   );

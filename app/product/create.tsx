@@ -8,12 +8,20 @@ import { Controller, useForm } from 'react-hook-form';
 import { Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { z } from 'zod';
 
+function getTodayString(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 const productSchema = z.object({
   id: z.string().min(1, 'Requerido'),
   name: z.string().min(5, 'Mínimo 5 caracteres').max(100, 'Máximo 100 caracteres'),
   description: z.string().min(10, 'Mínimo 10 caracteres').max(200, 'Máximo 200 caracteres'),
   logo: z.string().min(1, 'Requerido'),
-  date_release: z.string().refine((date) => new Date(date) >= new Date(), {
+  date_release: z.string().refine((dateStr) => dateStr >= getTodayString(), {
     message: 'Debe ser mayor o igual a la fecha actual',
   }),
   date_revision: z.string(),

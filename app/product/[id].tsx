@@ -92,11 +92,8 @@ export default function ProductDetail() {
   }
 
   return (
-    <>
-      <ScrollView
-        contentContainerStyle={[styles.root, { backgroundColor: colors.background }]}
-        showsVerticalScrollIndicator={false}
-      >
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Stack.Screen options={{ title: id ? `Producto ${id}` : 'Detalle del producto' }} />
         <View style={styles.headerSection}>
           <Text variant="title">ID: {id ?? '---'}</Text>
@@ -138,43 +135,43 @@ export default function ProductDetail() {
             ))}
           </View>
         </View>
-
-        <View style={styles.actions}>
-          <Pressable
-            onPress={() => {
-              const params = new URLSearchParams({
-                name: product?.name ?? '',
-                description: product?.description ?? '',
-                logo: product?.logo ?? '',
-                date_release: product?.date_release ?? '',
-                date_revision: product?.date_revision ?? '',
-              }).toString();
-              router.push(`/product/${id}/edit?${params}`);
-            }}
-            style={({ pressed }) => [
-              styles.actionButton,
-              { backgroundColor: colors.surface, borderColor: colors.border },
-              pressed && styles.buttonPressed,
-            ]}
-          >
-            <Text variant="body" color="primary">
-              Editar
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={handleDeletePress}
-            style={({ pressed }) => [
-              styles.actionButton,
-              { backgroundColor: colors.error, borderColor: colors.error },
-              pressed && styles.buttonPressed,
-            ]}
-          >
-            <Text variant="body" style={{ color: '#fff', fontWeight: '600' }}>
-              Eliminar
-            </Text>
-          </Pressable>
-        </View>
       </ScrollView>
+
+      <View style={[styles.footer, { backgroundColor: colors.background }]}>
+        <Pressable
+          onPress={() => {
+            const params = new URLSearchParams({
+              name: product?.name ?? '',
+              description: product?.description ?? '',
+              logo: product?.logo ?? '',
+              date_release: product?.date_release ?? '',
+              date_revision: product?.date_revision ?? '',
+            }).toString();
+            router.push(`/product/${id}/edit?${params}`);
+          }}
+          style={({ pressed }) => [
+            styles.button,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+            pressed && styles.buttonPressed,
+          ]}
+        >
+          <Text variant="body" color="primary">
+            Editar
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={handleDeletePress}
+          style={({ pressed }) => [
+            styles.button,
+            { backgroundColor: colors.error, borderColor: colors.error },
+            pressed && styles.buttonPressed,
+          ]}
+        >
+          <Text variant="body" style={{ color: '#fff', fontWeight: '600' }}>
+            Eliminar
+          </Text>
+        </Pressable>
+      </View>
 
       <BottomSheet
         ref={bottomSheetRef}
@@ -229,11 +226,14 @@ export default function ProductDetail() {
           </View>
         </BottomSheetView>
       </BottomSheet>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     paddingHorizontal: 16,
   },
-  root: {
+  scrollContent: {
     paddingVertical: 24,
     paddingHorizontal: 16,
   },
@@ -254,7 +254,6 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 16,
     padding: 20,
-    marginBottom: 24,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.12,
     shadowRadius: 16,
@@ -298,10 +297,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF80',
     borderRadius: 4,
   },
-  actions: {
-    marginTop: 8,
+  footer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
-  actionButton: {
+  button: {
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',

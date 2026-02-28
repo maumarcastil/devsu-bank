@@ -94,146 +94,145 @@ export default function ProductCreate() {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={[styles.root, { backgroundColor: colors.background }]}
-      showsVerticalScrollIndicator={false}
-    >
-      <Stack.Screen options={{ title: 'Crear Producto' }} />
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <Stack.Screen options={{ title: 'Crear Producto' }} />
 
-      <View style={[styles.card, { backgroundColor: colors.card }]}>
-        <Text variant="label" color="muted">
-          ID
-        </Text>
-        <Controller
-          control={control}
-          name="id"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={[
-                styles.input,
-                { backgroundColor: colors.surface, color: colors.text },
-                isPending && styles.inputDisabled,
-              ]}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              placeholder="Ingrese ID"
-              placeholderTextColor={colors.textMuted}
-              editable={!isPending}
-            />
-          )}
-        />
-        {errors.id && <Text style={styles.error}>{errors.id.message}</Text>}
+        <View style={[styles.card, { backgroundColor: colors.card }]}>
+          <Text variant="label" color="muted">
+            ID
+          </Text>
+          <Controller
+            control={control}
+            name="id"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={[
+                  styles.input,
+                  { backgroundColor: colors.surface, color: colors.text },
+                  isPending && styles.inputDisabled,
+                ]}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="Ingrese ID"
+                placeholderTextColor={colors.textMuted}
+                editable={!isPending}
+              />
+            )}
+          />
+          {errors.id && <Text style={styles.error}>{errors.id.message}</Text>}
 
-        <Text variant="label" color="muted" style={styles.label}>
-          Nombre
-        </Text>
-        <Controller
-          control={control}
-          name="name"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={[
-                styles.input,
-                { backgroundColor: colors.surface, color: colors.text },
-                isPending && styles.inputDisabled,
-              ]}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              placeholder="Ingrese nombre"
-              placeholderTextColor={colors.textMuted}
-              editable={!isPending}
-            />
-          )}
-        />
-        {errors.name && <Text style={styles.error}>{errors.name.message}</Text>}
+          <Text variant="label" color="muted" style={styles.label}>
+            Nombre
+          </Text>
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={[
+                  styles.input,
+                  { backgroundColor: colors.surface, color: colors.text },
+                  isPending && styles.inputDisabled,
+                ]}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="Ingrese nombre"
+                placeholderTextColor={colors.textMuted}
+                editable={!isPending}
+              />
+            )}
+          />
+          {errors.name && <Text style={styles.error}>{errors.name.message}</Text>}
 
-        <Text variant="label" color="muted" style={styles.label}>
-          Descripción
-        </Text>
-        <Controller
-          control={control}
-          name="description"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={[
-                styles.input,
-                styles.textArea,
-                { backgroundColor: colors.surface, color: colors.text },
-                isPending && styles.inputDisabled,
-              ]}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              multiline
-              numberOfLines={3}
-              placeholder="Ingrese descripción"
-              placeholderTextColor={colors.textMuted}
-              editable={!isPending}
-            />
-          )}
-        />
-        {errors.description && <Text style={styles.error}>{errors.description.message}</Text>}
+          <Text variant="label" color="muted" style={styles.label}>
+            Descripción
+          </Text>
+          <Controller
+            control={control}
+            name="description"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={[
+                  styles.input,
+                  styles.textArea,
+                  { backgroundColor: colors.surface, color: colors.text },
+                  isPending && styles.inputDisabled,
+                ]}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                multiline
+                numberOfLines={3}
+                placeholder="Ingrese descripción"
+                placeholderTextColor={colors.textMuted}
+                editable={!isPending}
+              />
+            )}
+          />
+          {errors.description && <Text style={styles.error}>{errors.description.message}</Text>}
 
-        <Text variant="label" color="muted" style={styles.label}>
-          Logo
-        </Text>
-        <Controller
-          control={control}
-          name="logo"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={[
-                styles.input,
-                { backgroundColor: colors.surface, color: colors.text },
-                isPending && styles.inputDisabled,
-              ]}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              placeholder="URL del logo"
-              placeholderTextColor={colors.textMuted}
-              editable={!isPending}
-            />
-          )}
-        />
-        {errors.logo && <Text style={styles.error}>{errors.logo.message}</Text>}
+          <Text variant="label" color="muted" style={styles.label}>
+            Logo
+          </Text>
+          <Controller
+            control={control}
+            name="logo"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={[
+                  styles.input,
+                  { backgroundColor: colors.surface, color: colors.text },
+                  isPending && styles.inputDisabled,
+                ]}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="URL del logo"
+                placeholderTextColor={colors.textMuted}
+                editable={!isPending}
+              />
+            )}
+          />
+          {errors.logo && <Text style={styles.error}>{errors.logo.message}</Text>}
 
-        <Text variant="label" color="muted" style={styles.label}>
-          Fecha Liberación
-        </Text>
-        <Controller
-          control={control}
-          name="date_release"
-          render={({ field: { onChange, value } }) => (
-            <DatePickerInput
-              value={value}
-              onChange={onChange}
-              placeholder="YYYY-MM-DD"
-              minimumDate={new Date()}
-              editable={!isPending}
-            />
-          )}
-        />
-        {errors.date_release && <Text style={styles.error}>{errors.date_release.message}</Text>}
+          <Text variant="label" color="muted" style={styles.label}>
+            Fecha Liberación
+          </Text>
+          <Controller
+            control={control}
+            name="date_release"
+            render={({ field: { onChange, value } }) => (
+              <DatePickerInput
+                value={value}
+                onChange={onChange}
+                placeholder="YYYY-MM-DD"
+                minimumDate={new Date()}
+                editable={!isPending}
+              />
+            )}
+          />
+          {errors.date_release && <Text style={styles.error}>{errors.date_release.message}</Text>}
 
-        <Text variant="label" color="muted" style={styles.label}>
-          Fecha Revisión
-        </Text>
-        <DatePickerInput
-          value={calculateRevisionDate(fechaLiberacion)}
-          onChange={() => {}}
-          editable={false}
-        />
-      </View>
+          <Text variant="label" color="muted" style={styles.label}>
+            Fecha Revisión
+          </Text>
+          <DatePickerInput
+            value={calculateRevisionDate(fechaLiberacion)}
+            onChange={() => {}}
+            editable={false}
+          />
+        </View>
+      </ScrollView>
 
-      <View style={styles.actions}>
+      <View style={[styles.footer, { backgroundColor: colors.background }]}>
         <Pressable
           onPress={handleSubmit(onSubmit)}
           disabled={isPending}
           style={({ pressed }) => [
-            styles.actionButton,
+            styles.button,
             { backgroundColor: '#FFD54F', borderColor: '#FFD54F' },
             pressed && styles.buttonPressed,
           ]}
@@ -246,7 +245,7 @@ export default function ProductCreate() {
           onPress={onReset}
           disabled={isPending}
           style={({ pressed }) => [
-            styles.actionButton,
+            styles.button,
             { backgroundColor: colors.surface, borderColor: colors.border },
             pressed && styles.buttonPressed,
           ]}
@@ -256,19 +255,21 @@ export default function ProductCreate() {
           </Text>
         </Pressable>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
     paddingVertical: 24,
     paddingHorizontal: 16,
   },
   card: {
     borderRadius: 16,
     padding: 20,
-    marginBottom: 24,
   },
   input: {
     borderWidth: 1,
@@ -293,10 +294,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 8,
   },
-  actions: {
-    marginTop: 8,
+  footer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
-  actionButton: {
+  button: {
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',

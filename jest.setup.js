@@ -1,4 +1,50 @@
+/* eslint-disable no-undef */
 // Setup for Jest tests
+
+// Mock react-native (must be first)
+jest.mock('react-native', () => ({
+  useColorScheme: jest.fn(() => 'light'),
+  StyleSheet: {
+    create: (styles) => styles,
+  },
+  View: 'View',
+  Text: 'Text',
+  Pressable: 'Pressable',
+  FlatList: 'FlatList',
+  TextInput: 'TextInput',
+  Image: 'Image',
+  ActivityIndicator: 'ActivityIndicator',
+  TouchableOpacity: 'TouchableOpacity',
+  ScrollView: 'ScrollView',
+  SafeAreaView: 'SafeAreaView',
+  StatusBar: 'StatusBar',
+  Platform: {
+    OS: 'ios',
+    select: jest.fn((obj) => obj.ios || obj.default),
+  },
+  Dimensions: {
+    get: jest.fn(() => ({ width: 375, height: 812 })),
+  },
+  PixelRatio: {
+    get: jest.fn(() => 2),
+    roundToNearestPixel: jest.fn((val) => val),
+  },
+  Animated: {
+    Value: jest.fn(() => ({ setValue: jest.fn() })),
+    timing: jest.fn(() => ({ start: jest.fn() })),
+    spring: jest.fn(() => ({ start: jest.fn() })),
+    createAnimatedComponent: jest.fn((comp) => comp),
+  },
+  NativeModules: {},
+  NativeEventEmitter: jest.fn(),
+  EventEmitter: jest.fn(),
+  PanResponder: {
+    create: jest.fn(() => ({
+      panHandlers: {},
+    })),
+  },
+}));
+
 // Mock expo modules
 jest.mock('expo-font', () => ({
   loadAsync: jest.fn(),

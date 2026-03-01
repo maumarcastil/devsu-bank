@@ -16,6 +16,7 @@ module.exports = {
       },
     ],
   },
+  transformIgnorePatterns: ['node_modules/(?!(react-native|@react-native|zustand)/)'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
@@ -23,6 +24,7 @@ module.exports = {
   collectCoverageFrom: [
     'src/utils/**/*.{ts,tsx}',
     'src/schemas/**/*.{ts,tsx}',
+    'src/stores/**/*.{ts,tsx}',
     '!src/**/index.{ts,tsx}',
     '!**/*.d.ts',
   ],
